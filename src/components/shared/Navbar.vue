@@ -6,9 +6,13 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text>
-      Add new employee
+    <!-- <v-btn text>
+      New discussion
     </v-btn>
+
+    <v-btn text>
+      Employees
+    </v-btn> -->
   </v-app-bar>
 </template>
 

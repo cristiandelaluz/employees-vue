@@ -12,44 +12,66 @@
           single-line
           hide-details
         ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-btn text @click="$store.dispatch('employee/showAddDialog', true)">
+          Add new employee
+        </v-btn>
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="employees"
         :search="search"
-      ></v-data-table>
+        :loading="loader"
+      >
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="edit(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small color="red" @click="remove(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+        <template v-slot:no-data>
+          <h3>No data</h3>
+        </template>
+      </v-data-table>
     </v-card>
   </v-container>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+import { employeesHeader } from '@/constants/tableHeaders';
+
 export default {
   data() {
     return {
       search: '',
-      headers: [
-        {
-          text: 'Id',
-          sortable: false,
-          value: 'id',
-        },
-        { text: 'Matricule', value: 'matricule' },
-        { text: 'Name', value: 'name' },
-        { text: 'Last name', value: 'lastName' },
-        { text: 'Email', value: 'email' },
-        { text: 'Phone', value: 'phone' },
-      ],
-      desserts: [
-        {
-          id: 1,
-          matricule: '123456',
-          name: 'Cristian',
-          lastName: 'De La Luz',
-          email: 'cristhian.oh16@gmail.com',
-          phone: '0667529730',
-        },
-      ],
+      headers: employeesHeader,
     };
+  },
+  created() {
+    this.fetchEmployees();
+  },
+  computed: {
+    ...mapGetters('employee', ['employees', 'loader']),
+  },
+  methods: {
+    ...mapActions('employee', [
+      'fetchEmployees',
+      'removeEmployee',
+      'setEmployeeModel',
+      'showAddDialog',
+      'setDialogEditMode',
+    ]),
+    edit(employee) {
+      this.setDialogEditMode(true);
+      this.setEmployeeModel(employee);
+      this.showAddDialog(true);
+    },
+    remove(employee) {
+      this.removeEmployee(employee._id);
+    },
   },
 };
 </script>
